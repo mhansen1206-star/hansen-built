@@ -32,6 +32,8 @@ nav{
 .nav-brand em{font-style:italic;font-weight:300}
 .nav-brand strong{font-weight:600;letter-spacing:.12em}
 .nav-links{display:flex;gap:2.5rem;list-style:none;align-items:center}
+.nav-toggle{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px;z-index:120}
+.nav-toggle span{display:block;width:26px;height:2px;background:var(--stone);transition:.3s}
 .nav-links a{
   font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;
   color:var(--saltgrass);text-decoration:none;transition:color .25s;
@@ -150,9 +152,25 @@ footer{
   footer{padding:2rem 1.5rem;flex-direction:column;align-items:flex-start}
   .ft-right{text-align:left}
 }
-@media(max-width:640px){
+@media(max-width:780px){
   nav{padding:1rem 1.5rem}
-  .nav-links{gap:1.2rem}
+  .nav-toggle{display:flex}
+  .nav-links{
+    position:fixed;top:0;right:0;height:100vh;width:74%;max-width:320px;
+    flex-direction:column;align-items:flex-start;justify-content:center;gap:2.2rem;
+    background:var(--stone);padding:3rem 2.5rem;margin:0;
+    transform:translateX(100%);transition:transform .35s ease;
+    box-shadow:-20px 0 60px rgba(0,0,0,.35);
+  }
+  nav.nav-open .nav-links{transform:translateX(0)}
+  .nav-links a{color:var(--cream);font-size:1rem;letter-spacing:.15em}
+  .nav-active a{color:var(--limestone)!important;border-bottom:none}
+  nav.nav-open .nav-toggle span{background:var(--cream)}
+  nav.nav-open .nav-toggle span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+  nav.nav-open .nav-toggle span:nth-child(2){opacity:0}
+  nav.nav-open .nav-toggle span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+}
+@media(max-width:640px){
   .form-grid{grid-template-columns:1fr}
 }
 </style>
@@ -161,6 +179,7 @@ footer{
 
 <nav>
   <a href="index.html" class="nav-brand"><em>Hansen</em><strong>BUILT</strong></a>
+  <button class="nav-toggle" id="navToggle" aria-label="Menu"><span></span><span></span><span></span></button>
   <ul class="nav-links">
     <li><a href="index.html#what">What We Build</a></li>
     <li><a href="index.html#why">Why Hansen Built</a></li>
@@ -209,11 +228,11 @@ footer{
       <div class="form-grid">
         <div class="fg">
           <label for="fn">First Name</label>
-          <input type="text" id="fn" name="first_name" placeholder="First name" required>
+          <input type="text" id="fn" name="first_name" placeholder="Dan" required>
         </div>
         <div class="fg">
           <label for="ln">Last Name</label>
-          <input type="text" id="ln" name="last_name" placeholder="Surname" required>
+          <input type="text" id="ln" name="last_name" placeholder="Hansen" required>
         </div>
         <div class="fg">
           <label for="email">Email Address</label>
@@ -266,6 +285,10 @@ footer{
 </footer>
 
 <script>
+var _nav=document.querySelector('nav'), _nt=document.getElementById('navToggle');
+_nt.addEventListener('click',()=>_nav.classList.toggle('nav-open'));
+document.querySelectorAll('.nav-links a').forEach(a=>a.addEventListener('click',()=>_nav.classList.remove('nav-open')));
+
 document.getElementById('cform').addEventListener('submit', function (e) {
   e.preventDefault();
 
