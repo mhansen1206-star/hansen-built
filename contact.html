@@ -163,7 +163,7 @@ footer{
   <a href="index.html" class="nav-brand"><em>Hansen</em><strong>BUILT</strong></a>
   <ul class="nav-links">
     <li><a href="index.html#what">What We Build</a></li>
-    <li><a href="index.html#why">Why Hansen</a></li>
+    <li><a href="index.html#why">Why Hansen Built</a></li>
     <li class="nav-active"><a href="contact.html">Get in Touch</a></li>
   </ul>
 </nav>
@@ -261,15 +261,45 @@ footer{
 <footer>
   <a href="index.html" class="ft-brand"><em>Hansen</em><strong>BUILT</strong></a>
   <div class="ft-right">
-    <p>DMH Construction (SA) Pty Ltd &nbsp;·&nbsp; Fleurieu Peninsula, South Australia</p>
+    <p>Hansen Built &nbsp;·&nbsp; Fleurieu Peninsula, South Australia</p>
   </div>
 </footer>
 
 <script>
-document.getElementById('cform').addEventListener('submit',function(e){
+document.getElementById('cform').addEventListener('submit', function (e) {
   e.preventDefault();
-  this.style.display='none';
-  document.getElementById('fsuccess').classList.add('show');
+
+  var form = this;
+  var btn = form.querySelector('.btn-submit');
+  var original = btn.textContent;
+  btn.textContent = 'Sending…';
+  btn.disabled = true;
+
+  // Collect the form fields
+  var data = {};
+  new FormData(form).forEach(function (value, key) { data[key] = value; });
+
+  // FormSubmit settings — where enquiries go and how the email looks
+  data._subject = 'New enquiry — Hansen Built website';
+  data._cc = 'admin@dmhsa.com.au';
+  data._template = 'table';
+
+  fetch('https://formsubmit.co/ajax/dan@dmhsa.com.au', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify(data)
+  })
+  .then(function (r) { return r.json(); })
+  .then(function () {
+    form.style.display = 'none';
+    document.getElementById('fsuccess').classList.add('show');
+  })
+  .catch(function () {
+    // If sending fails, let them know and offer email as a fallback
+    btn.textContent = original;
+    btn.disabled = false;
+    alert("Sorry — something went wrong sending your enquiry. Please email us directly at dan@dmhsa.com.au and we'll get straight back to you.");
+  });
 });
 </script>
 </body>
